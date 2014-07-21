@@ -10,7 +10,10 @@
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
  
+//I based the qt and boost code off of an example I found at http://programmingexamples.net/wiki/Qt/Boost
 
+//Io server isn't really necessary, I had some earlier compilation problems and so I wrapped boost's io_service in another object 
+//So really this should probably go away 
 class io_server { 
   
   boost::asio::io_service &service_; 
@@ -32,7 +35,7 @@ class io_server {
 
 }; 
 
-
+//Typical Object inheriting from QtWidget 
 class MyForm : public QWidget, private Ui::Form
 {
 	Q_OBJECT
@@ -44,9 +47,8 @@ class MyForm : public QWidget, private Ui::Form
 	MyForm(QWidget *parent, io_server &server); 
 
 	public Q_SLOTS:
-	  void pushButton_SetLabelText();
-	  void startButton_ServerRunner(); 
-	  void timeout_Poll();
+	  void startButton_ServerRunner(); //Start timer_ 
+	  void timeout_Poll(); //Poll the boost io service 
 
 
 };
