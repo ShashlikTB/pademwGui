@@ -1,0 +1,42 @@
+#include "form.h"
+ 
+MyForm::MyForm(QWidget *parent, io_server *server)
+  : QWidget(parent), server_(server)
+{
+  status_ = false; 
+  setupUi(this);
+  timer_ = std::make_shared<QTimer>(); 
+  connect( this->pushButton, SIGNAL( clicked() ), this, SLOT(pushButton_SetLabelText()) );
+  connect( this->startButton, SIGNAL( clicked () ), this, SLOT(startButton_ServerRunner() ) ); 
+  connect( this->timer_.get(), SIGNAL( timeout() ), this, SLOT(timeout_Poll()) ); 
+  
+}
+ 
+void MyForm::pushButton_SetLabelText()
+{
+  this->label->setText("hello");
+}
+
+
+void MyForm::startButton_ServerRunner() { 
+  if (status_) { 
+      std::cout << "Stopping server" << std::endl; 
+      timer_->stop(); 
+      status_ = false; 
+      startButton->setText("Stopped"); 
+
+  }
+  else { 
+    std::cout << "Running server" << std::endl; 
+    timer_->start(100); 
+    status_ = true; 
+    startButton->setText("Running"); 
+  }
+  
+  
+}
+
+
+void MyForm::timeout_Poll() { 
+ (*server_)(); 
+}
